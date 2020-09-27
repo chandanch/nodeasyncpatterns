@@ -15,6 +15,26 @@ app.use(express.static(path.join(__dirname, "dist")));
 
 app.use("/api/clothing", clothing);
 app.use("/api/errors", errors);
+
+//////// TEST APIs
+app.get("/api/asynctest", async (rq, res) => {
+  console.log("Getting data...");
+  const data = await asyncTest();
+  console.log("Data Recieved");
+  res.send(data);
+  console.log("Done!");
+});
+
+app.get("/api/asynctest2", async (rq, res) => {
+  console.log("Getting data...");
+  asyncTest().then((data) => {
+    console.log("Data Recieved");
+    res.send(data);
+  });
+  console.log("Done!");
+});
+////////////////
+
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "dist/index.html"));
 });
@@ -26,3 +46,11 @@ app.listen(app.get("port"));
 console.log("Listening on port: " + app.get("port"));
 
 module.exports = app;
+
+function asyncTest() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("Data Recieved...");
+    }, 3000);
+  });
+}
