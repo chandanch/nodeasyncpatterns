@@ -18,17 +18,21 @@ if (isMainThread) {
       wasterTimeout: 3000,
     },
   });
+
   // recieve message from worker thread using on() with event name `message`
   worker.on("message", (msg) => console.log(`Worker: ${msg}`));
 
+  // post message/data to worker
   worker.postMessage("Done with Workers");
 
   console.log("Finished executing on Main Thread");
 } else {
+  // recieve message/data from parent
   parentPort.on("message", (msg) => {
     // using workerData object to get initial data from parent
     console.log(`${workerData.outputPrefix}: ${msg}`);
   });
+
   // send messages back to the main thread using postMessage()
   parentPort.postMessage("Now starting worker thread");
   wasteTime(workerData.wasterTimeout);
