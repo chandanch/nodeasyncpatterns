@@ -3,7 +3,17 @@ const path = require("path");
 const favicon = require("serve-favicon");
 const bodyParser = require("body-parser");
 
-const clothing = require("./server/routes/clothing");
+const DataMonitor = require("./server/DataMonitor");
+
+// creating an instance of DataMonitor
+const dataMonitor = new DataMonitor();
+
+// listen to the events using on()
+dataMonitor.on("dataAdded", () => {
+  console.log(`New data has been added`);
+});
+
+const clothing = require("./server/routes/clothing")(dataMonitor);
 const errors = require("./server/routes/errors");
 
 const app = express();
