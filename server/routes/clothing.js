@@ -5,14 +5,18 @@ const router = express.Router();
 
 /* GET all clothing */
 router.route("/").get(function (req, res) {
-  getClothingData((err, data) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Returning clothing data");
+  getClothingDataPromise()
+    .then((data) => {
+      console.log("Recieved Clothing data");
       res.send(data);
-    }
-  });
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    })
+    .finally(() => {
+      console.log("Finished Promise execution");
+    });
+
   console.log("Doing more work...");
 });
 
@@ -24,6 +28,19 @@ function getClothingData(callback) {
       const clothingData = JSON.parse(data);
       callback(null, clothingData);
     }
+  });
+}
+
+function getClothingDataPromise() {
+  return new Promise((resolve, reject) => {
+    fs.readFile(datafile, "utf-8", (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        const clothingData = JSON.parse(data);
+        resolve(clothingData);
+      }
+    });
   });
 }
 
